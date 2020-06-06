@@ -1,0 +1,14 @@
+# docker run env parms
+s3url=s3://octank-claims-web/public-data/yellow_tripdata_2018-01.csv
+schurl=tcp://192.168.65.3:8786
+
+# start dask scheduler and worker
+docker run -it --network host dask dask-scheduler
+docker run -it --network host dask dask-worker localhost:8786
+
+#run daskclientapp container
+docker run -e s3url='s3://octank-claims-web/public-data/yellow_tripdata_2018-01.csv' -e schurl='tcp://192.168.65.3:8786' daskclientapp
+
+#push docker image to ecr
+docker tag daskclientapp:latest 716664005094.dkr.ecr.us-west-2.amazonaws.com/daskclientapp:latest
+docker push 716664005094.dkr.ecr.us-west-2.amazonaws.com/daskclientapp:latest
