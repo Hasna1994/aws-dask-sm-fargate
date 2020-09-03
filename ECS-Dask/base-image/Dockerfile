@@ -8,14 +8,16 @@ RUN conda update conda && conda install "conda=4.4.7"
 RUN conda install --yes \
     python-blosc \
     cytoolz \
-    dask  \
-    distributed \
+    dask==2.14  \
+    distributed==2.14 \
     nomkl \
     numpy \
     pandas \
-    s3fs \
     && conda clean -tipsy
-
+RUN conda update --yes dask distributed
+RUN conda install --yes s3fs==0.3.0 -c conda-forge
+RUN conda install --yes joblib==0.16 -c conda-forge
+RUN conda install --yes scikit-learn==0.23 -c conda-forge
 COPY prepare.sh /usr/bin/prepare.sh
 RUN chmod +x /usr/bin/prepare.sh
 
