@@ -1,0 +1,9 @@
+conda create -n py37dask python=3.7.7 anaconda
+conda install -n py37dask dask=2.25 -y
+conda install -n py37dask s3fs=0.3.0 -c conda-forge -y
+conda install -n py37dask dask-ml=1.6.0 -c conda-forge -y
+conda install -n py37dask -c conda-forge scikit-learn==0.23 -y
+conda install -n py37dask -c anaconda cloudpickle=1.6.0
+conda install -n py37dask -c anaconda numpy=1.19.1
+conda install -n py37dask -c conda-forge boto3=1.14.54 
+conda list -n py37dask

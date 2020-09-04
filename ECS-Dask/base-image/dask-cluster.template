@@ -30,7 +30,7 @@ Resources:
       Vpc: !Ref VpcId
       Name: local-dask
 
-  ECSExecutionRole:
+  ECSExecutionRole1:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -43,12 +43,12 @@ Resources:
             Action:
               - 'sts:AssumeRole'
       Path: /
-      RoleName: ECSExecutionRole
+      RoleName: ECSExecutionRole1
 
   RolePolicies:
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: ECSExecutionRole
+      PolicyName: ECSExecutionRole1
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -62,7 +62,7 @@ Resources:
             Effect: Allow
             Resource: '*'
       Roles:
-        - Ref: ECSExecutionRole
+        - Ref: ECSExecutionRole1
 
   DaskCluster:
     Type: 'AWS::ECS::Cluster'
@@ -98,16 +98,16 @@ Resources:
       Family: !Join 
         - ''
         - - cloudformation
-          - '-dask-scheduler'
+          - '-dask-scheduler-v5'
       Cpu: '1024'
       Memory: '2048'
       NetworkMode: awsvpc
-      TaskRoleArn: !Ref ECSExecutionRole
-      ExecutionRoleArn: !Ref ECSExecutionRole
+      TaskRoleArn: !Ref ECSExecutionRole1
+      ExecutionRoleArn: !Ref ECSExecutionRole1
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
-        - Name: dask-scheduler
+        - Name: dask-scheduler-v5
           Image: !Join 
             - .
             - - !Ref 'AWS::AccountId'
@@ -133,16 +133,16 @@ Resources:
       Family: !Join 
         - ''
         - - cloudformation
-          - '-dask-workers'
+          - '-dask-workers-v5'
       Cpu: '1024'
       Memory: '2048'
       NetworkMode: awsvpc
-      TaskRoleArn: !Ref ECSExecutionRole
-      ExecutionRoleArn: !Ref ECSExecutionRole
+      TaskRoleArn: !Ref ECSExecutionRole1
+      ExecutionRoleArn: !Ref ECSExecutionRole1
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
-        - Name: dask-workers
+        - Name: dask-workers-v5
           Image: !Join 
             - .
             - - !Ref 'AWS::AccountId'
@@ -185,7 +185,7 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-            - !Ref DaskSecurityGroup
+            - !Ref sgdask
           Subnets: !Ref Subnets
 
   DaskWorkerService:
@@ -208,21 +208,23 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-            - !Ref DaskSecurityGroup
+            - !Ref sgdask
           Subnets: !Ref Subnets
 
-  DaskSecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
+  sgdask:
+    Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: 'Enable Scheduler ports access '
-      GroupName: dask-sg
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: '8786'
-          ToPort: '8789'
-          SourceSecurityGroupName: dask-sg
-        - IpProtocol: tcp
-          FromPort: '9000'
-          ToPort: '9002'
-          SourceSecurityGroupName: dask-sg
-      VpcId: !Ref VpcId
+      GroupDescription: Enable Scheduler ports access
+      VpcId:
+        Ref: VpcId
+  sgdaskingress:
+    Type: AWS::EC2::SecurityGroupIngress
+    DependsOn: sgdask
+    Properties:
+      GroupId:
+        Ref: sgdask
+      IpProtocol: tcp
+      FromPort: '0'
+      ToPort: '65535'
+      SourceSecurityGroupId:
+        Ref: sgdask
