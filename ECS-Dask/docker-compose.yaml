@@ -3,9 +3,9 @@ version: "3.1"
 services:
   scheduler:
     build:
-      context: ./base-image
+      context: ./base-image-local
       dockerfile: Dockerfile
-    image: dask
+    image: dasklocal
     hostname: dask-scheduler
     ports:
       - "8786:8786"
@@ -14,15 +14,15 @@ services:
 
   worker-1:
     build:
-      context: ./base-image
+      context: ./base-image-local
       dockerfile: Dockerfile
-    image: dask
-    hostname: dask-worker
+    image: dasklocal
+    hostname: dask-worker-1
     command: ["dask-worker", "tcp://scheduler:8786"]
   worker-2:
     build:
       context: ./base-image
       dockerfile: Dockerfile
     image: dask
-    hostname: dask-worker
+    hostname: dask-worker-2
     command: ["dask-worker", "tcp://scheduler:8786"]
