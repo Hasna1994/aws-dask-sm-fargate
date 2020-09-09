@@ -5,23 +5,43 @@ Perform data science and ML with Dask on AWS SageMaker and Fargate.
 
 ![aws-dask-fargate-arch](./solution-arch.png)
 
-# Installation Instructions
 
-## PreReqs
-1.  Install AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
-2.  Install Docker - https://docs.docker.com/get-docker/
+## Implementing Distributed Dask on AWS Fargate
 
-## Dask Fargate Installation
-1.  Clone this repo to your workstation
-1.  From repo root: cd ECS-Dask; tar -xzf base-image.tar.gz; cd base-image
-1.  Create ECR repo "dask" using this doc - https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html
-1.  Login to your ECR repo from aws cli. Get login command from "View Push Commands" from your ECR repo AWS console  
-1.  Build docker dask image: docker build -t dask .
-1.  Tag image: docker tag dask:latest <AWS Account ID>.dkr.ecr.us-west-2.amazonaws.com/dask:latest
-1.  Push image to ECR repo: docker push <AWS Account ID>.dkr.ecr.us-west-2.amazonaws.com/dask:latest
-1.  Use CloudFormation Console to provision Fargate cluster using dask-cluster.template 
-    1.  Outbound Internet connectivity is required for package downloads. If deploying to private subnet, ensure NAT gateway route to internet exists
-1.  Provision SageMaker Notebook instance from AWS SageMaker console, choose VPC/Subnet/Security Group used in previous step
-1.  Open SageMaker Notebook and upload the example dask-sm-fargate-example1.ipynb file for testing.
- 
+1)  Install AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
+2)	Log into your AWS account and choose your region
+3)	Setup a VPC with private subnet, public subnet and NAT Gateway. Use the following instruction if needed: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html 
+4)	From project root: cd ECS-Dask/base-image
+5)	Build docker dask image: docker build -t dask .
+6)	Create ECR repo "dask" using the following instruction: - https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html
+7)	Login to your ECR repo from AWS CLI. Get login command from "View Push Commands" from your ECR repo AWS console.
+8)	Tag the dask image you built earlier for registering it into ECR.  Get this command from "View Push Commands" from your ECR repo AWS console. 
+9)	Push the above tagged dask image to ECR. Get this command from "View Push Commands" from your ECR repo AWS console. 
+10)	Use CloudFormation Console to provision Fargate cluster using dask-cluster.template located in project root.  Select VPC/private subnet to deploy the dask fargate cluster and follow the prompts to create the stack.
+11)	 Create SageMaker notebook instance
+a)	Under additional configuration, select the lifecycle configuration created earlier
+b)	Create new role with default options  
+c)	Under Network Choose VPC/private subnet and security group created from stack
+d)	Disable direct internet access
+12)	 Upload dask-sm-fargate-example notebook from your local device to SageMaker notebook instance or clone the github repo from SageMaker Notebook terminal
+
+
+## Setup Network Load Balancer for monitoring Fargate Dask Cluster
+
+1.	Create a public subnet in the same AZ where the private subnet was created
+2.	Create NLB on the above public subnet with listener port as TCP 80
+3.	Under AZs section, choose VPC you created above and choose public subnet in the same AZ where Dask Cluster is running.
+4.	Under configure routing, choose protocol as TCP, port as 8787 and target type as IP
+5.	Under register targets, choose your VPC and copy the private IP for the dask-scheduler task instance that can be found under Amazon ECS > Clusters > Fargate-Dask-Cluster > Dask-Scheduler > Tasks > Task 
+6.	Select the security group associated to SageMaker notebook and add this inbound rule to allows NLB port 80 traffic via the forwarded 8787 port:  Custom TCP, 8787, your NLB public subnet IP range
+
+
+
+
+
+## EDA on SageMaker notebook with Fargate Dask Cluster
+
+1.  Navigate to Amazon ECS > Clusters and ensure Fargate-Dask-Cluster is running with 1 task each for Dask-Scheduler and Dask-Workers
+2.  Execute each cell of the notebook and observe the results. 
+3.  Use the network load balance public DNS to monitor the performance of the cluster as you execute the notebook cells.
 
