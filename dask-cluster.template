@@ -30,7 +30,7 @@ Resources:
       Vpc: !Ref VpcId
       Name: local-dask
 
-  ECSExecutionRole1:
+  ECSExecutionRoleV1:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -43,12 +43,12 @@ Resources:
             Action:
               - 'sts:AssumeRole'
       Path: /
-      RoleName: ECSExecutionRole1
+      RoleName: ECSExecutionRoleV1
 
   RolePolicies:
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: ECSExecutionRole1
+      PolicyName: ECSExecutionRoleV1
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -62,7 +62,7 @@ Resources:
             Effect: Allow
             Resource: '*'
       Roles:
-        - Ref: ECSExecutionRole1
+        - Ref: ECSExecutionRoleV1
 
   DaskCluster:
     Type: 'AWS::ECS::Cluster'
@@ -98,16 +98,16 @@ Resources:
       Family: !Join 
         - ''
         - - cloudformation
-          - '-dask-scheduler-v5'
+          - '-dask-scheduler-v1'
       Cpu: '1024'
       Memory: '2048'
       NetworkMode: awsvpc
-      TaskRoleArn: !Ref ECSExecutionRole1
-      ExecutionRoleArn: !Ref ECSExecutionRole1
+      TaskRoleArn: !Ref ECSExecutionRoleV1
+      ExecutionRoleArn: !Ref ECSExecutionRoleV1
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
-        - Name: dask-scheduler-v5
+        - Name: dask-scheduler-v1
           Image: !Join 
             - .
             - - !Ref 'AWS::AccountId'
@@ -133,16 +133,16 @@ Resources:
       Family: !Join 
         - ''
         - - cloudformation
-          - '-dask-workers-v5'
+          - '-dask-workers-v1'
       Cpu: '1024'
       Memory: '2048'
       NetworkMode: awsvpc
-      TaskRoleArn: !Ref ECSExecutionRole1
-      ExecutionRoleArn: !Ref ECSExecutionRole1
+      TaskRoleArn: !Ref ECSExecutionRoleV1
+      ExecutionRoleArn: !Ref ECSExecutionRoleV1
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
-        - Name: dask-workers-v5
+        - Name: dask-workers-v1
           Image: !Join 
             - .
             - - !Ref 'AWS::AccountId'
