@@ -6,15 +6,16 @@ RUN chmod +x /usr/local/bin/dumb-init
 
 RUN conda update conda && conda install "conda=4.8.4"
 RUN conda install --yes \
-    cytoolz==0.8.2 \
+    python==3.7.7 \
+    cytoolz \
     dask==2.25  \
     distributed==2.25 \
     dask-glm==0.2.0 \
     nomkl \
     numpy \
-    pandas=1.0.1 \
+    pandas \
     && conda clean -tipsy
-RUN conda install --yes s3fs==0.4.0 -c conda-forge
+RUN conda install --yes s3fs==0.5.0 -c conda-forge
 COPY prepare.sh /usr/bin/prepare.sh
 RUN chmod +x /usr/bin/prepare.sh
 

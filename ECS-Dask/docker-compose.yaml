@@ -21,8 +21,8 @@ services:
     command: ["dask-worker", "tcp://scheduler:8786"]
   worker-2:
     build:
-      context: ./base-image
+      context: ./base-image-local
       dockerfile: Dockerfile
-    image: dask
+    image: dasklocal
     hostname: dask-worker-2
     command: ["dask-worker", "tcp://scheduler:8786"]
