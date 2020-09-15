@@ -19,10 +19,9 @@ Perform data science and ML with Dask on AWS SageMaker and Fargate.
 9)	Push the above tagged dask image to ECR. Get this command from "View Push Commands" from your ECR repo AWS console. 
 10)	Use CloudFormation Console to provision Fargate cluster using dask-cluster.template located in project root.  Select VPC/private subnet to deploy the dask fargate cluster and follow the prompts to create the stack.
 11)	 Create SageMaker notebook instance
-a)	Under additional configuration, select the lifecycle configuration created earlier
-b)	Create new role with default options  
-c)	Under Network Choose VPC/private subnet and security group created from stack
-d)	Disable direct internet access
+a)	Create new role with default options  
+b)	Under Network Choose VPC/private subnet and security group created from stack
+c)	Disable direct internet access
 12)	 Upload dask-sm-fargate-example notebook from your local device to SageMaker notebook instance or clone the github repo from SageMaker Notebook terminal
 
 
