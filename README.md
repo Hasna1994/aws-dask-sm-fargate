@@ -10,14 +10,14 @@ Perform data science and ML with Dask on AWS SageMaker and Fargate.
 
 1)  Install AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 2)	Log into your AWS account and choose your region
-3)	Setup a VPC with private subnet, public subnet and NAT Gateway. Use the following instruction if needed: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html 
-4)  Clone this project: https://github.com/rvvittal/aws-dask-sm-fargateFrom and from project root: cd ECS-Dask/base-image
-5)	Build docker dask image: docker build -t dask .
-6)	Create ECR repo "dask" using the following instruction: - https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html
-7)	Login to your ECR repo from AWS CLI. Get login command from "View Push Commands" from your ECR repo AWS console.
-8)	Tag the dask image you built earlier for registering it into ECR.  Get this command from "View Push Commands" from your ECR repo AWS console. 
-9)	Push the above tagged dask image to ECR. Get this command from "View Push Commands" from your ECR repo AWS console. 
-10)	Use CloudFormation Console to provision Fargate cluster using dask-cluster.template located in project root.  Select VPC/private subnet to deploy the dask fargate cluster and follow the prompts to create the stack.
+3)  Clone this project: https://github.com/rvvittal/aws-dask-sm-fargateFrom and from project root: cd ECS-Dask/base-image
+4)	Build docker dask image: docker build -t dask .
+5)	Create ECR repo "dask" using the following instruction: - https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html
+6)	Login to your ECR repo from AWS CLI. Get login command from "View Push Commands" from your ECR repo AWS console.
+7)	Tag the dask image you built earlier for registering it into ECR.  Get this command from "View Push Commands" from your ECR repo AWS console. 
+8)	Push the above tagged dask image to ECR. Get this command from "View Push Commands" from your ECR repo AWS console. 
+9)  Use CloudFormatin Console to provision VPC network resources using vpc-public-private.yaml located in project root.
+10)	Use CloudFormation Console to provision Fargate cluster using dask-cluster.template located in project root.  Select VPC/private subnet(output from above stack) to deploy the dask fargate cluster and follow the prompts to create the stack.
 11)	 Create SageMaker notebook instance
 a)	Create new role with default options  
 b)	Under Network Choose VPC/private subnet and security group created from stack
