@@ -10,7 +10,11 @@ Parameters:
     ConstraintDescription: >-
       must be a list of at least two existing subnets associated with at least
       two different availability zones. They should be residing in the selected
-      Virtual Private Cloud.
+      Virtual Private Cloud
+  sgdask:
+    Type: 'AWS::EC2::SecurityGroup::Id'
+    Description: security group of dask fargate cluster
+    ConstraintDescription:  private security group of dask fargate cluster
 Resources:
   logsGroupScheduler:
     Type: 'AWS::Logs::LogGroup'
@@ -211,20 +215,4 @@ Resources:
             - !Ref sgdask
           Subnets: !Ref Subnets
 
-  sgdask:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Enable Scheduler ports access
-      VpcId:
-        Ref: VpcId
-  sgdaskingress:
-    Type: AWS::EC2::SecurityGroupIngress
-    DependsOn: sgdask
-    Properties:
-      GroupId:
-        Ref: sgdask
-      IpProtocol: tcp
-      FromPort: '0'
-      ToPort: '65535'
-      SourceSecurityGroupId:
-        Ref: sgdask
+  

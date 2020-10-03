@@ -6,7 +6,7 @@
     VPCName:
       Description: The name of the VPC being created.
       Type: String
-      Default: "VPC Public and Private with NAT"
+      Default: "dask-vpc-main"
     VPCCidr:
       Description: VPC CIDR Block.
       Type: String
@@ -427,6 +427,48 @@
           Ref: "PrivateSubnet2"
         RouteTableId:
           Ref: "PrivateRouteTable2"
+  
+    sgdask:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Enable Scheduler ports access
+        VpcId:
+          Ref: "VPC"
+    sgdaskingress:
+      Type: AWS::EC2::SecurityGroupIngress
+      DependsOn: sgdask
+      Properties:
+        GroupId:
+          Ref: sgdask
+        IpProtocol: tcp
+        FromPort: '0'
+        ToPort: '65535'
+        SourceSecurityGroupId:
+           Ref: sgdask
+
+    DaskFargateStack:
+     Type: AWS::CloudFormation::Stack
+     DependsOn: "PrivateSubnet1"
+     Properties:
+      TemplateURL: https://octank-claims-web.s3-us-west-2.amazonaws.com/template/dask-cluster.template
+      Parameters:
+        VpcId: 
+          Ref: VPC
+        Subnets: 
+          Ref: PrivateSubnet1
+        sgdask:
+          Ref: sgdask
+    SagemakerFargateStack:
+     Type: AWS::CloudFormation::Stack
+     DependsOn: ["PrivateSubnet1","sgdask"]
+     Properties:
+      TemplateURL: https://octank-claims-web.s3-us-west-2.amazonaws.com/template/sagemaker-notebook.template
+      Parameters:
+        sgdask:
+          Ref: sgdask
+        subnet: 
+          Ref: PrivateSubnet1
+        
 
   Outputs:
 
