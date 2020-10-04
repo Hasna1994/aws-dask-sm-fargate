@@ -103,8 +103,8 @@ Resources:
         - ''
         - - cloudformation
           - '-dask-scheduler-v1'
-      Cpu: '1024'
-      Memory: '2048'
+      Cpu: '2048'
+      Memory: '4096'
       NetworkMode: awsvpc
       TaskRoleArn: !Ref ECSExecutionRoleV1
       ExecutionRoleArn: !Ref ECSExecutionRoleV1
@@ -118,8 +118,8 @@ Resources:
               - dkr.ecr
               - !Ref 'AWS::Region'
               - 'amazonaws.com/dask:latest'
-          Cpu: '1024'
-          Memory: '2048'
+          Cpu: '2048'
+          Memory: '4096'
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -138,8 +138,8 @@ Resources:
         - ''
         - - cloudformation
           - '-dask-workers-v1'
-      Cpu: '1024'
-      Memory: '2048'
+      Cpu: '2048'
+      Memory: '4096'
       NetworkMode: awsvpc
       TaskRoleArn: !Ref ECSExecutionRoleV1
       ExecutionRoleArn: !Ref ECSExecutionRoleV1
@@ -153,8 +153,8 @@ Resources:
               - dkr.ecr
               - !Ref 'AWS::Region'
               - 'amazonaws.com/dask:latest'
-          Cpu: '1024'
-          Memory: '2048'
+          Cpu: '2048'
+          Memory: '4096'
           LogConfiguration:
             LogDriver: awslogs
             Options:

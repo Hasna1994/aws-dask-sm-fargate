@@ -1,7 +1,7 @@
 ---
   AWSTemplateFormatVersion: "2010-09-09"
 
-  Description: "Creates a VPC with Managed NAT, similar to the VPC Wizard at https://console.aws.amazon.com/vpc/home#wizardFullpagePublicAndPrivate: (extended from VPC_with_PublicIPs_And_DNS.template sample)"
+  Description: "Creates VPC network resources and orchestrates calling nested stacks to setup dask cluster, sagemaker notebook and nlb"
   Parameters:
     VPCName:
       Description: The name of the VPC being created.
@@ -445,6 +445,19 @@
         ToPort: '65535'
         SourceSecurityGroupId:
            Ref: sgdask
+    sgdaskingress2:
+      Type: AWS::EC2::SecurityGroupIngress
+      DependsOn: sgdask
+      Properties:
+        GroupId:
+          Ref: sgdask
+        IpProtocol: tcp
+        FromPort: '8787'
+        ToPort: '8787'
+        CidrIp: 
+          Ref: PublicSubnet1Cidr
+        SourceSecurityGroupId:
+           Ref: sgdask
 
     DaskFargateStack:
      Type: AWS::CloudFormation::Stack
@@ -468,6 +481,18 @@
           Ref: sgdask
         subnet: 
           Ref: PrivateSubnet1
+    DaskStatusNLBStack:
+     Type: AWS::CloudFormation::Stack
+     DependsOn: ["DaskFargateStack"]
+     Properties:
+      TemplateURL: https://octank-claims-web.s3-us-west-2.amazonaws.com/template/dask-status-nlb.template
+      Parameters:
+        VPC:
+          Ref: VPC
+        Subnet1: 
+          Ref: PublicSubnet1
+        Subnet2: 
+          Ref: PublicSubnet2
         
 
   Outputs:
@@ -512,3 +537,4 @@
       Value: !GetAtt VPC.DefaultSecurityGroup
       Export:
         Name: !Sub "${AWS::Region}-${AWS::StackName}-DefaultSecurityGroup"
+    
