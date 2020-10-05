@@ -34,7 +34,8 @@ Perform data science and ML with Dask on AWS SageMaker and Fargate.
 
 ## EDA on SageMaker notebook with Fargate Dask Cluster
 
-1.  Navigate to Amazon ECS > Clusters and ensure Fargate-Dask-Cluster is running with 1 task each for Dask-Scheduler and Dask-Workers
+1.  Navigate to Amazon ECS > Clusters and ensure Fargate-Dask-Cluster is running with 1 task each for Dask-Scheduler and Dask-Workersv
+2.  Navigate to Amazon SageMaker > Notebook Instances > Open Jupyter and upload dask-sm-fargate-example.ipynb and dask-dashboard-ui.png files from project root
 2.  Execute each cell of the notebook and observe the results. 
 3.  Use the network load balancer public DNS to monitor the performance of the cluster as you execute the notebook cells.
 
