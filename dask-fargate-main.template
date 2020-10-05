@@ -456,8 +456,6 @@
         ToPort: '8787'
         CidrIp: 
           Ref: PublicSubnet1Cidr
-        SourceSecurityGroupId:
-           Ref: sgdask
 
     DaskFargateStack:
      Type: AWS::CloudFormation::Stack
