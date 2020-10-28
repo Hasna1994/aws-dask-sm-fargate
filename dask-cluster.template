@@ -112,12 +112,7 @@ Resources:
         - FARGATE
       ContainerDefinitions:
         - Name: dask-scheduler-v1
-          Image: !Join 
-            - .
-            - - !Ref 'AWS::AccountId'
-              - dkr.ecr
-              - !Ref 'AWS::Region'
-              - 'amazonaws.com/dask:latest'
+          Image: 'ramgvittal/dask:latest'
           Cpu: '2048'
           Memory: '4096'
           LogConfiguration:
@@ -147,12 +142,7 @@ Resources:
         - FARGATE
       ContainerDefinitions:
         - Name: dask-workers-v1
-          Image: !Join 
-            - .
-            - - !Ref 'AWS::AccountId'
-              - dkr.ecr
-              - !Ref 'AWS::Region'
-              - 'amazonaws.com/dask:latest'
+          Image: 'ramgvittal/dask:latest'
           Cpu: '2048'
           Memory: '4096'
           LogConfiguration:
@@ -165,7 +155,7 @@ Resources:
           Command:
             - dask-worker
             - 'dask-scheduler.local-dask:8786'
-            - '--memory-limit 1800MB'
+            - '--memory-limit 4096MB'
             - '--worker-port 9000'
             - '--nanny-port 9001'
             - '--bokeh-port 9002'

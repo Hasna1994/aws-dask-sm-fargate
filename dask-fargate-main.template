@@ -6,7 +6,7 @@
     VPCName:
       Description: The name of the VPC being created.
       Type: String
-      Default: "dask-vpc-main"
+      Default: "dask-fargate-main"
     VPCCidr:
       Description: VPC CIDR Block.
       Type: String
