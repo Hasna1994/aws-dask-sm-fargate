@@ -113,7 +113,7 @@ Resources:
             - - !Ref 'AWS::AccountId'
               - dkr.ecr
               - !Ref 'AWS::Region'
-              - 'amazonaws.com/dask:latest'
+              - 'amazonaws.com/darwin_r_py_base:latest'
           Cpu: '1024'
           Memory: '2048'
           LogConfiguration:
@@ -148,7 +148,7 @@ Resources:
             - - !Ref 'AWS::AccountId'
               - dkr.ecr
               - !Ref 'AWS::Region'
-              - 'amazonaws.com/dask:latest'
+              - 'amazonaws.com/darwin_r_py_base:latest'
           Cpu: '1024'
           Memory: '2048'
           LogConfiguration:
